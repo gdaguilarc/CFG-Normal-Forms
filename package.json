@@ -1,0 +1,35 @@
+{
+  "name": "cfg-normal-forms",
+  "version": "1.0.0",
+  "description": "An algorithm that transforms any context free grammar to its Chomsky's normal form",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "server": "babel-node ./src/app.js",
+    "dev": "NODE_ENV=development npm-run-all server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gdaguilarc/CFG-Normal-Forms.git"
+  },
+  "author": "David Aguilar",
+  "license": "GNU",
+  "bugs": {
+    "url": "https://github.com/gdaguilarc/CFG-Normal-Forms/issues"
+  },
+  "homepage": "https://github.com/gdaguilarc/CFG-Normal-Forms#readme",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "npm-run-all": "^4.1.5"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.4.3",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "prettier": "^1.16.4"
+  }
+}
