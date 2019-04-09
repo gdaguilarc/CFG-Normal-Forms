@@ -12,4 +12,4 @@ app.use(routes);
 
 app.listen(3000, () => console.log('Hello'));
 
-module.expors = app;
+export default app;
