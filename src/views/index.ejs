@@ -30,21 +30,28 @@
         <div class="card-body">
           <h4 class="card-title">File Syntax</h4>
           <p class="card-text">
-            S --> U | V <br />
-            U --> TaU | TaT | UaT <br />
-            V --> TbV | TbT | VbT <br />
-            T --> aTbT | bTaT | ε
+            1 S --> U | V <br />
+            2 U --> TaU | TaT | UaT <br />
+            3 V --> TbV | TbT | VbT <br />
+            4 T --> aTbT | bTaT | λ
           </p>
         </div>
       </div>
-      <form action="#" class="aligner">
+      <p>Please upload a file for normalization. Use the sintax specified in below.</p>
+      <form action="/" method="post" class="aligner">
         <div class="input-file-container">
           <canvas id="imageCanvas"></canvas>
-          <input class="input-file" id="my-file" type="file" name="file" />
+          <input
+            class="input-file"
+            id="my-file"
+            type="file"
+            name="glc"
+            enctype="multipart/form-data"
+          />
           <label tabindex="0" for="my-file" class="input-file-trigger">Select a file</label>
         </div>
         <p class="file-return vertical-item"></p>
-        <button type="button" class="btn btn-primary vertical-item">Submit</button>
+        <button type="submit" class="btn btn-primary vertical-item">Submit</button>
       </form>
     </div>
   </body>
