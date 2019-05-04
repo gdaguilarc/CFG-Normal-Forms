@@ -62,3 +62,6 @@ typings/
 
 # The Typescript build files 
 build/
+
+# txt files for testing 
+test.files/
