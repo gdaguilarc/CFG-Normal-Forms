@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as Loki from 'lokijs';
 import { loadCollection, txtFilter, cleanFolder } from './utils';
+import { CFG } from './cfg';
 
 // setup
 const DB_NAME = 'db.json';
@@ -29,10 +30,18 @@ app.get('/', (req, res) => {
 app.post('/result', upload.single('cfg'), async (req, res) => {
   try {
     const col = await loadCollection(COLLECTION_NAME, db);
-    console.log(req.file);
     const data = col.insert(req.file);
 
     db.saveDatabase();
+    const textByLine = fs
+      .readFileSync(data.path)
+      .toString()
+      .split('\n');
+
+    const cfg = new CFG(textByLine);
+
+    console.log('read', cfg);
+    console.log('read', cfg.getRule('S'));
     res.send({ id: data.$loki, fileName: data.filename, originalName: data.originalname });
   } catch (err) {
     console.log(err);
