@@ -1,0 +1,4 @@
+S --> U | V | S
+U --> TaU | TaT | UaT 
+V --> TbV | TbT | VbT 
+T --> aTbT | bTaT | λ
