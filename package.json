@@ -12,7 +12,7 @@
     "url": "git+https://github.com/gdaguilarc/CFG-Normal-Forms.git"
   },
   "author": "David Aguilar",
-  "license": "MIT",
+  "license": "GLP-3.0",
   "bugs": {
     "url": "https://github.com/gdaguilarc/CFG-Normal-Forms/issues"
   },
