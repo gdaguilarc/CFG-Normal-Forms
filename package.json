@@ -19,6 +19,7 @@
   "homepage": "https://github.com/gdaguilarc/CFG-Normal-Forms#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "combinations": "^0.1.1",
     "cors": "^2.8.4",
     "del": "^3.0.0",
     "ejs": "^2.6.1",

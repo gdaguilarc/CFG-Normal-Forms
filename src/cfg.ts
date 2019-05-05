@@ -1,3 +1,5 @@
+import * as combinations from 'combinations';
+
 class CFG {
   rules: Map<string, string[]>;
 
@@ -67,25 +69,30 @@ class CFG {
   }
 
   private eliminateLambdaRules() {
+    const unique = (value, index, self) => {
+      return self.indexOf(value) === index;
+    };
     let nul = [];
-    for (const key in this.rules.keys()) {
+    let toLambda = [];
+    for (const key of this.rules.keys()) {
       const rules = this.getRule(key);
       rules.forEach(rule => {
         if (rule === 'λ') {
           nul.push(key);
+          toLambda.push(key);
         }
       });
     }
-    let prev = [];
-    let contains = true;
-    while (prev != nul) {
-      prev = nul;
-      for (const key in this.rules.keys()) {
-        const rules = this.getRule(key);
-        rules.forEach(rule => {
-          const letters = rule.split('');
-          nul.forEach(letter => {
-            if (!letters.includes(letter)) {
+    let prev = 0;
+    while (prev < nul.length) {
+      prev = nul.length;
+      for (const key of this.rules.keys()) {
+        let contains = false;
+        this.getRule(key).forEach(rule => {
+          rule.split('').forEach(letter => {
+            if (nul.includes(letter)) {
+              contains = true;
+            } else {
               contains = false;
             }
           });
@@ -94,9 +101,49 @@ class CFG {
           }
         });
       }
+      nul = nul.filter(unique);
     }
 
-    console.log('NULL', nul);
+    toLambda.forEach(ele => {
+      let newStates = [];
+      this.getRule(ele).forEach(rule => {
+        if (rule != 'λ') {
+          newStates.push(rule);
+        }
+        const r = rule.split('');
+        r.forEach(letter => {
+          if (letter === letter.toLowerCase() && letter != 'λ') {
+            newStates.push(letter);
+          }
+        });
+        newStates = newStates.filter(unique);
+        this.rules.set(ele, newStates);
+      });
+    });
+
+    const rulesOfIn = this.getRule(nul[nul.length - 1]);
+    let newStates = [];
+    rulesOfIn.forEach(rule => {
+      let is = false;
+      rule.split('').forEach(letter => {
+        if (nul.includes(letter)) {
+          is = true;
+        } else {
+          is = false;
+        }
+      });
+      if (is) {
+        let com = combinations(rule.split(''));
+        com.forEach(rule => {
+          const r = rule.join('');
+          newStates.push(r);
+        });
+      }
+    });
+    newStates.push('λ');
+    newStates = newStates.filter(unique);
+    this.rules.set(nul[nul.length - 1], newStates);
+    console.log('NEW', this.rules);
   }
 }
 
