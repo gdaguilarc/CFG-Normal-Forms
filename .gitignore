@@ -63,6 +63,7 @@ typings/
 # The Typescript build files 
 build/
 dist/
+uploads/
 
 # txt files for testing 
 test.files/
