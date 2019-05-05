@@ -33,10 +33,12 @@ app.post('/result', upload.single('cfg'), async (req, res) => {
     const data = col.insert(req.file);
 
     db.saveDatabase();
+
+    // split with '/n' for linux and '/r/n' for Windows
     const textByLine = fs
       .readFileSync(data.path)
       .toString()
-      .split('\r\n');
+      .split('\n');
 
     console.log(textByLine);
 
