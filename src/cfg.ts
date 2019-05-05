@@ -28,6 +28,13 @@ class CFG {
   }
 
   /**
+   * chomsky
+   */
+  public chomsky() {
+    this.eliminateLambdaRules();
+  }
+
+  /**
    * getRule
    */
   public getRule(letter: string) {
@@ -88,6 +95,8 @@ class CFG {
         });
       }
     }
+
+    console.log('NULL', nul);
   }
 }
 
