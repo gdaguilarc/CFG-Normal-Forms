@@ -38,10 +38,10 @@
         </div>
       </div>
       <p>Please upload a file for normalization. Use the sintax specified in below.</p>
-      <form action="/" method="post" class="aligner">
+      <form action="/result" method="post" class="aligner" enctype="multipart/form-data">
         <div class="input-file-container">
           <canvas id="imageCanvas"></canvas>
-          <input class="input-file" id="my-file" type="file" name="glc" enctype="multipart/form-data" />
+          <input class="input-file" id="my-file" type="file" name="cfg" />
           <label tabindex="0" for="my-file" class="input-file-trigger">Select a file</label>
         </div>
         <p class="file-return vertical-item"></p>
