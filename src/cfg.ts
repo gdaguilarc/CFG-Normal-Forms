@@ -43,6 +43,52 @@ class CFG {
       return false;
     }
   }
+
+  private nonRecursiveInitial() {
+    const i = this.rules.keys()[0];
+    const rules = this.getRule(i);
+
+    rules.forEach(elem => {
+      const letters = elem.split('');
+      letters.forEach(letter => {
+        if (letter === i) {
+          this.rules.set(i + "'", i);
+          return;
+        }
+      });
+    });
+  }
+
+  private eliminateLambdaRules() {
+    let nul = [];
+    for (const key in this.rules.keys()) {
+      const rules = this.getRule(key);
+      rules.forEach(rule => {
+        if (rule === 'λ') {
+          nul.push(key);
+        }
+      });
+    }
+    let prev = [];
+    let contains = true;
+    while (prev != nul) {
+      prev = nul;
+      for (const key in this.rules.keys()) {
+        const rules = this.getRule(key);
+        rules.forEach(rule => {
+          const letters = rule.split('');
+          nul.forEach(letter => {
+            if (!letters.includes(letter)) {
+              contains = false;
+            }
+          });
+          if (contains) {
+            nul.push(key);
+          }
+        });
+      }
+    }
+  }
 }
 
 export { CFG };
