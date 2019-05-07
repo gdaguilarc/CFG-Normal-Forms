@@ -135,9 +135,10 @@ class CFG {
       if (is) {
         let com = combinations(rule.split(''));
         com.forEach(rule => {
-          const r = rule.join('');
-          newStates.push(r);
+          newStates.push(rule.join(''));
         });
+      } else {
+        newStates.push(rule);
       }
     });
     newStates.push('λ');
