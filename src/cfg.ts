@@ -83,68 +83,73 @@ class CFG {
         }
       });
     }
-    let prev = 0;
-    while (prev < nul.length) {
-      prev = nul.length;
-      for (const key of this.rules.keys()) {
-        let contains = false;
-        this.getRule(key).forEach(rule => {
-          rule.split('').forEach(letter => {
-            if (nul.includes(letter)) {
-              contains = true;
-            } else {
-              contains = false;
+    if (toLambda.length === 0) {
+      return;
+    } else {
+      let prev = 0;
+      while (prev < nul.length) {
+        prev = nul.length;
+        for (const key of this.rules.keys()) {
+          let contains = false;
+          this.getRule(key).forEach(rule => {
+            rule.split('').forEach(letter => {
+              if (nul.includes(letter)) {
+                contains = true;
+              } else {
+                contains = false;
+              }
+            });
+            if (contains) {
+              nul.push(key);
             }
           });
-          if (contains) {
-            nul.push(key);
+        }
+        nul = nul.filter(unique);
+      }
+
+      toLambda.forEach(ele => {
+        let newStates = [];
+        this.getRule(ele).forEach(rule => {
+          if (rule != 'λ') {
+            newStates.push(rule);
+          }
+          const r = rule.split('');
+          r.forEach(letter => {
+            if (letter === letter.toLowerCase() && letter != 'λ') {
+              newStates.push(letter);
+            }
+          });
+          newStates = newStates.filter(unique);
+          this.rules.set(ele, newStates);
+        });
+      });
+
+      const rulesOfIn = this.getRule(nul[nul.length - 1]);
+      let newStates = [];
+      rulesOfIn.forEach(rule => {
+        let is = false;
+        rule.split('').forEach(letter => {
+          if (nul.includes(letter)) {
+            is = true;
+          } else {
+            is = false;
           }
         });
-      }
-      nul = nul.filter(unique);
-    }
-
-    toLambda.forEach(ele => {
-      let newStates = [];
-      this.getRule(ele).forEach(rule => {
-        if (rule != 'λ') {
+        if (is) {
+          let com = combinations(rule.split(''));
+          com.forEach(rule => {
+            newStates.push(rule.join(''));
+          });
+        } else {
           newStates.push(rule);
         }
-        const r = rule.split('');
-        r.forEach(letter => {
-          if (letter === letter.toLowerCase() && letter != 'λ') {
-            newStates.push(letter);
-          }
-        });
-        newStates = newStates.filter(unique);
-        this.rules.set(ele, newStates);
       });
-    });
 
-    const rulesOfIn = this.getRule(nul[nul.length - 1]);
-    let newStates = [];
-    rulesOfIn.forEach(rule => {
-      let is = false;
-      rule.split('').forEach(letter => {
-        if (nul.includes(letter)) {
-          is = true;
-        } else {
-          is = false;
-        }
-      });
-      if (is) {
-        let com = combinations(rule.split(''));
-        com.forEach(rule => {
-          newStates.push(rule.join(''));
-        });
-      } else {
-        newStates.push(rule);
-      }
-    });
-    newStates.push('λ');
-    newStates = newStates.filter(unique);
-    this.rules.set(nul[nul.length - 1], newStates);
-    console.log('NEW', this.rules);
+      newStates.push('λ');
+      newStates = newStates.filter(unique);
+      this.rules.set(nul[nul.length - 1], newStates);
+      console.log('NEW', this.rules);
+    }
   }
 }
 
