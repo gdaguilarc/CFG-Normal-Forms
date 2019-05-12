@@ -33,7 +33,7 @@ class CFG {
    * chomsky
    */
   public chomsky() {
-    this.eliminateLambdaRules();
+    this.nonRecursiveInitial();
   }
 
   /**
@@ -46,7 +46,7 @@ class CFG {
   }
 
   private isUpperCase(letter: string) {
-    if (letter === letter.toUpperCase()) {
+    if (letter === letter.toUpperCase() && letter != 'λ') {
       return true;
     } else {
       return false;
@@ -61,17 +61,19 @@ class CFG {
       const letters = elem.split('');
       letters.forEach(letter => {
         if (letter === i) {
-          this.rules.set(i + "'", i);
+          this.rules.set(i + '*', i);
           return;
         }
       });
     });
+    console.log(this.rules);
   }
 
   private eliminateLambdaRules() {
     const unique = (value, index, self) => {
       return self.indexOf(value) === index;
     };
+
     let nul = [];
     let toLambda = [];
     for (const key of this.rules.keys()) {

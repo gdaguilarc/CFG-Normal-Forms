@@ -38,7 +38,7 @@ app.post('/result', upload.single('cfg'), async (req, res) => {
     const textByLine = fs
       .readFileSync(data.path)
       .toString()
-      .split('\n');
+      .split('\r\n');
 
     console.log(textByLine);
 
