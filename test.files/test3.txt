@@ -1,4 +1,4 @@
-S --> ACA | BA | ZD
+S --> ACA | BA | ZD | SA
 A --> aAa | B | C
 B --> bB | B | λ
 C --> cC | λ

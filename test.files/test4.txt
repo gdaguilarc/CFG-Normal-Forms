@@ -1,0 +1,4 @@
+S --> ACA | CA | AA | AC | A | C | λ
+A --> aAa | aa | B | C
+B --> bB | b
+C --> cC | c
