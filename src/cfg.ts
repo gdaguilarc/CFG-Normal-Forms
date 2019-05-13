@@ -32,7 +32,6 @@ class CFG {
   public normalForm() {
     this.eliminateLambdaRules();
     this.chainRules();
-    this.uselessSymbols();
     this.chomsky();
     this.nonRecursiveInitial();
 

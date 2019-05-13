@@ -27,6 +27,10 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+app.get('/result', (req, res) => {
+  res.render('result');
+});
+
 app.post('/result', upload.single('cfg'), async (req, res) => {
   try {
     const col = await loadCollection(COLLECTION_NAME, db);
@@ -38,7 +42,7 @@ app.post('/result', upload.single('cfg'), async (req, res) => {
     const textByLine = fs
       .readFileSync(data.path)
       .toString()
-      .split('\n');
+      .split('\r\n');
 
     console.log(textByLine);
 
@@ -46,7 +50,7 @@ app.post('/result', upload.single('cfg'), async (req, res) => {
 
     console.log('read', cfg);
     cfg.normalForm();
-    res.send({ id: data.$loki, fileName: data.filename, originalName: data.originalname });
+    res.render('result');
   } catch (err) {
     console.log(err);
     res.sendStatus(400);
