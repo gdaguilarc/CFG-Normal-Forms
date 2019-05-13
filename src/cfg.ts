@@ -36,23 +36,14 @@ class CFG {
     this.chomsky();
     this.nonRecursiveInitial();
 
-    console.log("FINISHED", this.rules);
+    console.log('FINISHED', this.rules);
   }
 
   /**
    * chomsky
    */
   public chomsky() {
-<<<<<<< HEAD
-    this.eliminateLambdaRules();
-    this.nonRecursiveInitial();
-    // this.chainRules();
-    // this.uselessSymbols();
-
     const advancedLength = rule => {
-=======
-    const advancedLength = (rule) => {
->>>>>>> f21f00896db6459260296d74658013b7b430c6b8
       const regex1 = RegExp('[A-Z]\\d+', 'g');
       const regex2 = RegExp('[A-Z]\\*', 'g');
 
@@ -85,10 +76,10 @@ class CFG {
       for (let rule of this.getRule(key)) {
         const len = advancedLength(rule);
         if (len > 1) {
-          let index =  this.getRule(key).indexOf(rule);
-          let newRule = rule.replace(/[a-z]/g, (match) => {
-            terminalRules.set(match.toUpperCase() + "*", [match]);
-            return match.toUpperCase() + "*";
+          let index = this.getRule(key).indexOf(rule);
+          let newRule = rule.replace(/[a-z]/g, match => {
+            terminalRules.set(match.toUpperCase() + '*', [match]);
+            return match.toUpperCase() + '*';
           });
           this.getRule(key)[index] = newRule;
         }
@@ -108,9 +99,9 @@ class CFG {
         if (len > 2) {
           // console.log("rule to examine", rule)
           let newStr = rule[0];
-          let remainder = "";
-          if (rule[1] === "*") {
-            newStr = newStr + "*";
+          let remainder = '';
+          if (rule[1] === '*') {
+            newStr = newStr + '*';
             remainder = rule.slice(2);
           } else if (!isNaN(rule[1] as any)) {
             let a = [];
@@ -126,7 +117,7 @@ class CFG {
             newVariable = existingRules.get(remainder);
           } else {
             counter = counter + 1;
-            newVariable = "T" + counter.toString();
+            newVariable = 'T' + counter.toString();
             existingRules.set(remainder, newVariable);
             newRules.set(newVariable, [remainder]);
           }
@@ -150,17 +141,17 @@ class CFG {
         }
       }
       return done;
-    }
+    };
 
     while (!allChomsky()) {
       for (const key of newRules.keys()) {
-        for (const rule of newRules.get(key)) { 
-          if (advancedLength(rule) > 2) { 
+        for (const rule of newRules.get(key)) {
+          if (advancedLength(rule) > 2) {
             // console.log("rule to examine", rule)
             let newStr = rule[0];
-            let remainder = "";
-            if (rule[1] === "*") {
-              newStr = newStr + "*";
+            let remainder = '';
+            if (rule[1] === '*') {
+              newStr = newStr + '*';
               remainder = rule.slice(2);
             } else if (!isNaN(rule[1] as any)) {
               let a = [];
@@ -176,7 +167,7 @@ class CFG {
               newVariable = existingRules.get(remainder);
             } else {
               counter = counter + 1;
-              newVariable = "T" + counter.toString();
+              newVariable = 'T' + counter.toString();
               existingRules.set(remainder, newVariable);
               newRules.set(newVariable, [remainder]);
               existingRules.set(newStr + newVariable, key);
@@ -199,7 +190,7 @@ class CFG {
       this.rules.set(key, terminalRules.get(key));
     }
 
-    console.log("after chomsky normalization", this.rules);
+    console.log('after chomsky normalization', this.rules);
   }
 
   /**
