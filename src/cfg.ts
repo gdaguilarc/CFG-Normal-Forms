@@ -1,4 +1,5 @@
 import * as combinations from 'combinations';
+import { MapToString, copyMap } from './tools';
 
 class CFG {
   rules: Map<string, string[]>;
@@ -30,12 +31,30 @@ class CFG {
   }
 
   public normalForm() {
-    this.eliminateLambdaRules();
-    this.chainRules();
-    this.chomsky();
-    this.nonRecursiveInitial();
+    const result = {
+      lambdaRules: null,
+      chainRules: null,
+      useless: null,
+      chomsky: null,
+      final: null,
+    };
 
-    console.log('FINISHED', this.rules);
+    this.eliminateLambdaRules();
+    result.lambdaRules = MapToString(this.rules);
+
+    this.chainRules();
+    result.chainRules = MapToString(this.rules);
+
+    this.uselessSymbols();
+    result.useless = MapToString(this.rules);
+
+    this.chomsky();
+    result.chomsky = MapToString(this.rules);
+
+    this.nonRecursiveInitial();
+    result.final = MapToString(this.rules);
+
+    return result;
   }
 
   /**
@@ -85,9 +104,6 @@ class CFG {
       }
     }
 
-    // console.log("terminal rules", terminalRules);
-    // console.log("after terminal rules", this.rules)
-
     let newRules = new Map<string, string[]>();
     let existingRules = new Map<string, string>();
     let counter = 0;
@@ -96,7 +112,6 @@ class CFG {
       for (let rule of this.getRule(key)) {
         const len = advancedLength(rule);
         if (len > 2) {
-          // console.log("rule to examine", rule)
           let newStr = rule[0];
           let remainder = '';
           if (rule[1] === '*') {
@@ -125,9 +140,6 @@ class CFG {
         }
       }
     }
-    // console.log("after limiting to two", this.rules);
-    // console.log("existing rules", existingRules);
-    // console.log("new rules", newRules);
 
     const allChomsky = () => {
       let done = true;
@@ -146,7 +158,6 @@ class CFG {
       for (const key of newRules.keys()) {
         for (const rule of newRules.get(key)) {
           if (advancedLength(rule) > 2) {
-            // console.log("rule to examine", rule)
             let newStr = rule[0];
             let remainder = '';
             if (rule[1] === '*') {
@@ -177,9 +188,6 @@ class CFG {
         }
       }
     }
-    // console.log("after purification process");
-    // console.log("existing rules", existingRules);
-    // console.log("new rules", newRules);
 
     for (const key of newRules.keys()) {
       this.rules.set(key, newRules.get(key));
@@ -445,9 +453,27 @@ class CFG {
     }
     console.log('Variables that lead to terminal', term);
 
-    let allVariables = this.rules.keys();
+    const getAllVariables = () => {
+      let variables = [];
+      for (const key of this.rules.keys()) {
+        if (!variables.includes(key)) {
+          variables.push(key);
+        }
+        for (const rule of this.getRule(key)) {
+          let letters = rule.split('');
+          for (const letter of letters) {
+            if (this.isUpperCase(letter) && !variables.includes(letter)) {
+              variables.push(letter);
+            }
+          }
+        }
+      }
+      return variables;
+    };
+
+    let allVar = getAllVariables();
     let variablesToRemove = [];
-    for (const variable of allVariables) {
+    for (const variable of allVar) {
       if (!term.includes(variable)) {
         this.rules.delete(variable);
         variablesToRemove.push(variable);
@@ -464,7 +490,6 @@ class CFG {
         }
       }
     }
-    console.log("After removing variables that don't lead to terminal", this.rules);
 
     const substract = (setA, setB) => {
       return setA.filter(elem => {
@@ -490,8 +515,7 @@ class CFG {
         }
       }
     }
-    console.log('Variables derivable from initial', reach);
-    allVariables = this.rules.keys();
+    let allVariables = getAllVariables();
     variablesToRemove = [];
     for (const variable of allVariables) {
       if (!reach.includes(variable)) {
@@ -510,7 +534,6 @@ class CFG {
         }
       }
     }
-    console.log("After removing variables that don't derive from initial", this.rules);
   }
 }
 
