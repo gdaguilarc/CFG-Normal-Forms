@@ -33,8 +33,8 @@ class CFG {
    * chomsky
    */
   public chomsky() {
+    this.eliminateLambdaRules();
     this.nonRecursiveInitial();
-    //this.eliminateLambdaRules();
     // this.chainRules();
     // this.uselessSymbols();
 
