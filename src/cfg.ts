@@ -53,6 +53,8 @@ class CFG {
 
     this.nonRecursiveInitial();
     result.final = MapToString(this.rules);
+
+    return result;
   }
 
   /**
@@ -102,9 +104,6 @@ class CFG {
       }
     }
 
-    // console.log("terminal rules", terminalRules);
-    // console.log("after terminal rules", this.rules)
-
     let newRules = new Map<string, string[]>();
     let existingRules = new Map<string, string>();
     let counter = 0;
@@ -113,7 +112,6 @@ class CFG {
       for (let rule of this.getRule(key)) {
         const len = advancedLength(rule);
         if (len > 2) {
-          // console.log("rule to examine", rule)
           let newStr = rule[0];
           let remainder = '';
           if (rule[1] === '*') {
@@ -142,9 +140,6 @@ class CFG {
         }
       }
     }
-    // console.log("after limiting to two", this.rules);
-    // console.log("existing rules", existingRules);
-    // console.log("new rules", newRules);
 
     const allChomsky = () => {
       let done = true;
@@ -163,7 +158,6 @@ class CFG {
       for (const key of newRules.keys()) {
         for (const rule of newRules.get(key)) {
           if (advancedLength(rule) > 2) {
-            // console.log("rule to examine", rule)
             let newStr = rule[0];
             let remainder = '';
             if (rule[1] === '*') {
@@ -466,7 +460,7 @@ class CFG {
           variables.push(key);
         }
         for (const rule of this.getRule(key)) {
-          let letters = rule.split("");
+          let letters = rule.split('');
           for (const letter of letters) {
             if (this.isUpperCase(letter) && !variables.includes(letter)) {
               variables.push(letter);
@@ -475,7 +469,7 @@ class CFG {
         }
       }
       return variables;
-    }
+    };
 
     let allVar = getAllVariables();
     let variablesToRemove = [];
@@ -496,7 +490,6 @@ class CFG {
         }
       }
     }
-    console.log("After removing variables that don't lead to terminal", this.rules);
 
     const substract = (setA, setB) => {
       return setA.filter(elem => {
@@ -522,7 +515,6 @@ class CFG {
         }
       }
     }
-    console.log('Variables derivable from initial', reach);
     let allVariables = getAllVariables();
     variablesToRemove = [];
     for (const variable of allVariables) {
@@ -542,7 +534,6 @@ class CFG {
         }
       }
     }
-    console.log("After removing variables that don't derive from initial", this.rules);
   }
 }
 
