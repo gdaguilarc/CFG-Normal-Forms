@@ -45,7 +45,7 @@ app.post('/result', upload.single('cfg'), async (req, res) => {
     const cfg = new CFG(textByLine);
 
     console.log('read', cfg);
-    cfg.chomsky();
+    cfg.normalForm();
     res.send({ id: data.$loki, fileName: data.filename, originalName: data.originalname });
   } catch (err) {
     console.log(err);

@@ -29,15 +29,20 @@ class CFG {
     return rules;
   }
 
+  public normalForm() {
+    this.eliminateLambdaRules();
+    this.chainRules();
+    this.uselessSymbols();
+    this.chomsky();
+    this.nonRecursiveInitial();
+
+    console.log("FINISHED", this.rules);
+  }
+
   /**
    * chomsky
    */
   public chomsky() {
-    // this.nonRecursiveInitial();
-    // this.eliminateLambdaRules();
-    // this.chainRules();
-    // this.uselessSymbols();
-
     const advancedLength = (rule) => {
       const regex1 = RegExp('[A-Z]\\d+', 'g');
       const regex2 = RegExp('[A-Z]\\*', 'g');
@@ -65,16 +70,127 @@ class CFG {
 
       return len;
     };
-    let newRules = new Map<string, string[]>();
-    for (const key of this.rules.keys()) {
-      for (const rule of this.getRule(key)) {
-        const len = advancedLength(rule);
-        if (len > 2) {
 
+    let terminalRules = new Map<string, string[]>();
+    for (const key of this.rules.keys()) {
+      for (let rule of this.getRule(key)) {
+        const len = advancedLength(rule);
+        if (len > 1) {
+          let index =  this.getRule(key).indexOf(rule);
+          let newRule = rule.replace(/[a-z]/g, (match) => {
+            terminalRules.set(match.toUpperCase() + "*", [match]);
+            return match.toUpperCase() + "*";
+          });
+          this.getRule(key)[index] = newRule;
         }
       }
     }
 
+    // console.log("terminal rules", terminalRules);
+    // console.log("after terminal rules", this.rules)
+
+    let newRules = new Map<string, string[]>();
+    let existingRules = new Map<string, string>();
+    let counter = 0;
+    const regex2 = RegExp('[A-Z]\\d+', 'g');
+    for (const key of this.rules.keys()) {
+      for (let rule of this.getRule(key)) {
+        const len = advancedLength(rule);
+        if (len > 2) {
+          // console.log("rule to examine", rule)
+          let newStr = rule[0];
+          let remainder = "";
+          if (rule[1] === "*") {
+            newStr = newStr + "*";
+            remainder = rule.slice(2);
+          } else if (!isNaN(rule[1] as any)) {
+            let a = [];
+            a = regex2.exec(rule);
+            newStr = a[0];
+            remainder = rule.slice(regex2.lastIndex);
+          } else {
+            remainder = rule.slice(1);
+          }
+
+          let newVariable;
+          if (existingRules.has(remainder)) {
+            newVariable = existingRules.get(remainder);
+          } else {
+            counter = counter + 1;
+            newVariable = "T" + counter.toString();
+            existingRules.set(remainder, newVariable);
+            newRules.set(newVariable, [remainder]);
+          }
+          let index = this.getRule(key).indexOf(rule);
+          this.getRule(key)[index] = newStr + newVariable;
+        }
+      }
+    }
+    // console.log("after limiting to two", this.rules);
+    // console.log("existing rules", existingRules);
+    // console.log("new rules", newRules);
+
+    const allChomsky = () => {
+      let done = true;
+      for (const key of newRules.keys()) {
+        for (const rule of newRules.get(key)) {
+          if (advancedLength(rule) > 2) {
+            done = false;
+            break;
+          }
+        }
+      }
+      return done;
+    }
+
+    while (!allChomsky()) {
+      for (const key of newRules.keys()) {
+        for (const rule of newRules.get(key)) { 
+          if (advancedLength(rule) > 2) { 
+            // console.log("rule to examine", rule)
+            let newStr = rule[0];
+            let remainder = "";
+            if (rule[1] === "*") {
+              newStr = newStr + "*";
+              remainder = rule.slice(2);
+            } else if (!isNaN(rule[1] as any)) {
+              let a = [];
+              a = regex2.exec(rule);
+              newStr = a[0];
+              remainder = rule.slice(regex2.lastIndex);
+            } else {
+              remainder = rule.slice(1);
+            }
+
+            let newVariable;
+            if (existingRules.has(remainder)) {
+              newVariable = existingRules.get(remainder);
+            } else {
+              counter = counter + 1;
+              newVariable = "T" + counter.toString();
+              existingRules.set(remainder, newVariable);
+              newRules.set(newVariable, [remainder]);
+              existingRules.set(newStr + newVariable, key);
+            }
+            let index = newRules.get(key).indexOf(rule);
+            newRules.get(key)[index] = newStr + newVariable;
+          }
+        }
+      }
+    }
+    // console.log("after purification process");
+    // console.log("existing rules", existingRules);
+    // console.log("new rules", newRules);
+
+    for (const key of newRules.keys()) {
+      this.rules.set(key, newRules.get(key));
+    }
+
+    for (const key of terminalRules.keys()) {
+      this.rules.set(key, terminalRules.get(key));
+    }
+
+    console.log("after chomsky normalization", this.rules);
   }
 
   /**
@@ -88,6 +204,14 @@ class CFG {
 
   private isUpperCase(letter: string) {
     if (letter === letter.toUpperCase()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  private isLowerCase(letter: string) {
+    if (letter === letter.toLowerCase()) {
       return true;
     } else {
       return false;
