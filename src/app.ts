@@ -34,7 +34,7 @@ app.post('/result', upload.single('cfg'), async (req, res) => {
 
     db.saveDatabase();
 
-    // split with '/n' for linux and '/r/n' for Windows
+    // split with '\n' for linux and '\r\n' for Windows
     const textByLine = fs
       .readFileSync(data.path)
       .toString()
@@ -46,6 +46,7 @@ app.post('/result', upload.single('cfg'), async (req, res) => {
 
     console.log('read', cfg);
     cfg.normalForm();
+
     res.send({ id: data.$loki, fileName: data.filename, originalName: data.originalname });
   } catch (err) {
     console.log(err);

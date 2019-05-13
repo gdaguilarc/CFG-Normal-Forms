@@ -1,4 +1,5 @@
 import * as combinations from 'combinations';
+import { MapToString, copyMap } from './tools';
 
 class CFG {
   rules: Map<string, string[]>;
@@ -30,13 +31,28 @@ class CFG {
   }
 
   public normalForm() {
-    this.eliminateLambdaRules();
-    this.chainRules();
-    this.uselessSymbols();
-    this.chomsky();
-    this.nonRecursiveInitial();
+    const result = {
+      lambdaRules: null,
+      chainRules: null,
+      useless: null,
+      chomsky: null,
+      final: null,
+    };
 
-    console.log('FINISHED', this.rules);
+    this.eliminateLambdaRules();
+    result.lambdaRules = MapToString(this.rules);
+
+    this.chainRules();
+    result.chainRules = MapToString(this.rules);
+
+    this.uselessSymbols();
+    result.useless = MapToString(this.rules);
+
+    this.chomsky();
+    result.chomsky = MapToString(this.rules);
+
+    this.nonRecursiveInitial();
+    result.final = MapToString(this.rules);
   }
 
   /**
@@ -178,9 +194,6 @@ class CFG {
         }
       }
     }
-    // console.log("after purification process");
-    // console.log("existing rules", existingRules);
-    // console.log("new rules", newRules);
 
     for (const key of newRules.keys()) {
       this.rules.set(key, newRules.get(key));
