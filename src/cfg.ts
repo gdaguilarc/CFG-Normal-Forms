@@ -63,8 +63,8 @@ class CFG {
       let len = rule.length;
       len = len - array2.length;
       let lenNum = 0;
-      array1.forEach((elem) => {
-        lenNum = lenNum + elem.length - 1; 
+      array1.forEach(elem => {
+        lenNum = lenNum + elem.length - 1;
       });
       len = len - lenNum;
 
@@ -203,7 +203,7 @@ class CFG {
   }
 
   private isUpperCase(letter: string) {
-    if (letter === letter.toUpperCase()) {
+    if (letter === letter.toUpperCase() && letter != 'λ') {
       return true;
     } else {
       return false;
@@ -219,24 +219,25 @@ class CFG {
   }
 
   private nonRecursiveInitial() {
-    const i = this.rules.keys()[0];
-    const rules = this.getRule(i);
+    let i = this.rules.keys().next().value;
 
-    rules.forEach(elem => {
+    this.getRule(i).forEach(elem => {
       const letters = elem.split('');
       letters.forEach(letter => {
         if (letter === i) {
-          this.rules.set(i + "*", i);
+          this.rules.set(i + '*', [i]);
           return;
         }
       });
     });
+    console.log(this.rules);
   }
 
   private eliminateLambdaRules() {
     const unique = (value, index, self) => {
       return self.indexOf(value) === index;
     };
+
     let nul = [];
     let toLambda = [];
     for (const key of this.rules.keys()) {
@@ -322,17 +323,17 @@ class CFG {
     const equalSets = (setA, setB) => {
       if (setA.length === setB.length) {
         return setA.every((value, index) => {
-          return value === setB[index]; 
+          return value === setB[index];
         });
       } else {
         return false;
       }
     };
     const substract = (setA, setB) => {
-      return setA.filter((elem) => {
+      return setA.filter(elem => {
         return !setB.includes(elem);
       });
-    }
+    };
     for (const key of this.rules.keys()) {
       let chainSet = [];
       let prev = [];
@@ -355,7 +356,7 @@ class CFG {
       }
       chains.set(key, chainSet);
     }
-    console.log("Chain sets", chains);
+    console.log('Chain sets', chains);
 
     const unique = (value, index, self) => {
       return self.indexOf(value) === index;
@@ -383,7 +384,6 @@ class CFG {
       }
       mainRules = mainRules.filter(unique);
       this.rules.set(mainKey, mainRules);
-
     }
     console.log('After chain rules', this.rules);
   }
@@ -395,7 +395,7 @@ class CFG {
       const rules = this.getRule(key);
       for (const rule of rules) {
         let onlyTerminals = true;
-        for (const elem of rule.split("")) {
+        for (const elem of rule.split('')) {
           if (this.isUpperCase(elem)) {
             onlyTerminals = false;
             break;
@@ -408,19 +408,19 @@ class CFG {
           break;
         }
       }
-    } 
+    }
     const equalSets = (setA, setB) => {
       if (setA.length === setB.length) {
         return setA.every((value, index) => {
-          return value === setB[index]; 
+          return value === setB[index];
         });
       } else {
         return false;
       }
     };
-    const isOnlyPrevAndTerminal = ((rule, prevSet) => {
+    const isOnlyPrevAndTerminal = (rule, prevSet) => {
       let isValid = true;
-      for (const element of rule.split("")) {
+      for (const element of rule.split('')) {
         if (this.isUpperCase(element)) {
           if (!prevSet.includes(element)) {
             isValid = false;
@@ -429,7 +429,7 @@ class CFG {
         }
       }
       return isValid;
-    });
+    };
     let prev = [];
     while (!equalSets(term, prev)) {
       prev = [...term];
@@ -438,20 +438,20 @@ class CFG {
         for (const rule of rules) {
           if (isOnlyPrevAndTerminal(rule, prev)) {
             if (!term.includes(variable)) {
-              term.push(variable)
+              term.push(variable);
             }
           }
         }
       }
     }
-    console.log("Variables that lead to terminal", term);
+    console.log('Variables that lead to terminal', term);
 
     let allVariables = this.rules.keys();
     let variablesToRemove = [];
     for (const variable of allVariables) {
       if (!term.includes(variable)) {
         this.rules.delete(variable);
-        variablesToRemove.push(variable)
+        variablesToRemove.push(variable);
       }
     }
     for (const variable of this.rules.keys()) {
@@ -468,20 +468,20 @@ class CFG {
     console.log("After removing variables that don't lead to terminal", this.rules);
 
     const substract = (setA, setB) => {
-      return setA.filter((elem) => {
+      return setA.filter(elem => {
         return !setB.includes(elem);
       });
-    }
+    };
     let reach = [this.rules.keys().next().value];
-    let prevSet = []
-    let newSet = []
+    let prevSet = [];
+    let newSet = [];
     while (!equalSets(reach, prevSet)) {
       newSet = substract(reach, prevSet);
       prevSet = [...reach];
       for (const variable of newSet) {
         const rules = this.getRule(variable);
         for (const rule of rules) {
-          for (const elem of rule.split("")) {
+          for (const elem of rule.split('')) {
             if (this.isUpperCase(elem)) {
               if (!reach.includes(elem)) {
                 reach.push(elem);
@@ -491,13 +491,13 @@ class CFG {
         }
       }
     }
-    console.log("Variables derivable from initial", reach);
+    console.log('Variables derivable from initial', reach);
     allVariables = this.rules.keys();
     variablesToRemove = [];
     for (const variable of allVariables) {
       if (!reach.includes(variable)) {
         this.rules.delete(variable);
-        variablesToRemove.push(variable)
+        variablesToRemove.push(variable);
       }
     }
     for (const variable of this.rules.keys()) {
