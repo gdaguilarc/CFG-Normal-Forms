@@ -446,9 +446,27 @@ class CFG {
     }
     console.log('Variables that lead to terminal', term);
 
-    let allVariables = this.rules.keys();
+    const getAllVariables = () => {
+      let variables = [];
+      for (const key of this.rules.keys()) {
+        if (!variables.includes(key)) {
+          variables.push(key);
+        }
+        for (const rule of this.getRule(key)) {
+          let letters = rule.split("");
+          for (const letter of letters) {
+            if (this.isUpperCase(letter) && !variables.includes(letter)) {
+              variables.push(letter);
+            }
+          }
+        }
+      }
+      return variables;
+    }
+
+    let allVar = getAllVariables();
     let variablesToRemove = [];
-    for (const variable of allVariables) {
+    for (const variable of allVar) {
       if (!term.includes(variable)) {
         this.rules.delete(variable);
         variablesToRemove.push(variable);
@@ -492,7 +510,7 @@ class CFG {
       }
     }
     console.log('Variables derivable from initial', reach);
-    allVariables = this.rules.keys();
+    let allVariables = getAllVariables();
     variablesToRemove = [];
     for (const variable of allVariables) {
       if (!reach.includes(variable)) {
