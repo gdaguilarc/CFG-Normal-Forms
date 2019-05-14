@@ -9,12 +9,51 @@
     <script src="./js/index.js"></script>
     <title>Index</title>
   </head>
+
   <body>
-    <div class="title">
-      Delete lambda rules
-    </div>
-    <div class="body">
-      S -> A | D | aA
+    <div class="container">
+      <div class="title">
+        Delete lambda rules
+      </div>
+      <% for (var i = 0; i < lambda.length; i++){
+      <div class="body"><%= arr[i] %></div>
+      <% } %>
+
+      <div class="title">
+        Delete chain rules
+      </div>
+      <% for (var i = 0; i < chain.length; i++){
+      <div class="body">
+        <%= arr[i] %>
+      </div>
+      } %>
+
+      <div class="title">
+        Delete useless symbols
+      </div>
+      <% for (var i = 0; i < useless.length; i++){
+      <div class="body">
+        <%= arr[i] %>
+      </div>
+      } %>
+
+      <div class="title">
+        Delete initial recursion
+      </div>
+      <% for (var i = 0; i < recursion.length; i++){
+      <div class="body">
+        <%= arr[i] %>
+      </div>
+      } %>
+
+      <div class="title">
+        Chomsky
+      </div>
+      <% for (var i = 0; i < chomsky.length; i++){
+      <div class="body">
+        <%= arr[i] %>
+      </div>
+      } %>
     </div>
   </body>
 </html>

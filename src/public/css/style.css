@@ -23,7 +23,11 @@
 .content {
   justify-content: space-around;
 }
-
+.conainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .space-around {
   justify-content: space-around;
 }

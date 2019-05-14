@@ -6,6 +6,7 @@ import * as path from 'path';
 import * as Loki from 'lokijs';
 import { loadCollection, txtFilter, cleanFolder } from './utils';
 import { CFG } from './cfg';
+import * as ejs from 'ejs';
 
 // setup
 const DB_NAME = 'db.json';
@@ -45,10 +46,12 @@ app.post('/result', upload.single('cfg'), async (req, res) => {
       .split('\n');
 
     const cfg = new CFG(textByLine);
-
-    cfg.normalForm();
-
-    res.send({ id: data.$loki, fileName: data.filename, originalName: data.originalname });
+    var lambda = cfg.normalForm()[0];
+    var chain = cfg.normalForm()[1];
+    var useless = cfg.normalForm()[2];
+    var recursion = cfg.normalForm()[3];
+    var chomsky = cfg.normalForm()[4];
+    res.render('result', { lambda: lambda, chain: chain, useless: useless, recursion: recursion, chomsky: chomsky });
   } catch (err) {
     console.log(err);
     res.sendStatus(400);
