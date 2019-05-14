@@ -237,7 +237,7 @@ class CFG {
       const letters = elem.split('');
       letters.forEach(letter => {
         if (letter === i) {
-          this.rules.set(i + '*', [i]);
+          this.rules.set(i + '*', this.getRule(i));
           return;
         }
       });
