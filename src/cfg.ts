@@ -35,8 +35,8 @@ class CFG {
       lambdaRules: null,
       chainRules: null,
       useless: null,
-      chomsky: null,
       final: null,
+      chomsky: null,
     };
 
     this.eliminateLambdaRules();
@@ -210,7 +210,7 @@ class CFG {
   }
 
   private isUpperCase(letter: string) {
-    if (letter === letter.toUpperCase() && letter != 'λ') {
+    if (letter === letter.toUpperCase()) {
       return true;
     } else {
       return false;
