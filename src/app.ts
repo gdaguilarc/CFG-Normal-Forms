@@ -42,7 +42,7 @@ app.post('/result', upload.single('cfg'), async (req, res) => {
     const textByLine = fs
       .readFileSync(data.path)
       .toString()
-      .split('\r\n');
+      .split('\n');
 
     const cfg = new CFG(textByLine);
 

@@ -42,7 +42,7 @@ class CFG {
     this.eliminateLambdaRules();
     result.lambdaRules = MapToString(this.rules);
 
-    /*/this.chainRules();
+    this.chainRules();
     result.chainRules = MapToString(this.rules);
 
     this.uselessSymbols();
@@ -54,7 +54,8 @@ class CFG {
     this.nonRecursiveInitial();
     result.final = MapToString(this.rules);
 
-    return result;/*/
+    console.log(result);
+    return result;
   }
 
   /**
@@ -209,6 +210,10 @@ class CFG {
     }
   }
 
+  public setRule(letter: string, array: Array<string>) {
+    this.rules.set(letter, array);
+  }
+
   private isUpperCase(letter: string) {
     if (letter === letter.toUpperCase() && letter != 'λ') {
       return true;
@@ -278,53 +283,73 @@ class CFG {
         }
         nul = nul.filter(unique);
       }
-      console.log(nul);
-      console.log(toLambda);
 
-      const forloko = (key, arr, lambdaDerivations) => {
+      /**
+       *
+       * PERMUTATIONS PART
+       *
+       */
+
+      // Method used to substract the permutations
+      const filterLambda = (key, arr, lambdaDerivations) => {
         let substractLetters = (controlArr, word) => {
-          return;
-        };
-        let maxLenghtArr = arr => {
-          let max = [];
-          arr.forEach(e => {
-            if (max.length < e.length) {
-              max = [...e];
-            }
-          });
+          let extraRules = [];
 
-          return max;
+          controlArr.forEach(rule => {
+            let tempWord = [...word.split('')];
+            tempWord = tempWord.filter((e, index) => {
+              return !rule.includes(index);
+            });
+            newRules.push(tempWord.join(''));
+          });
+          return extraRules;
         };
 
         let tempOrderedDerivations = [];
         let newRules = [...arr];
+
         // Order of the letters to make the permuttion
         for (let i = 0; i < arr.length; i++) {
           if (arr[i] !== 'λ') {
-            console.log(arr[i]);
-            tempOrderedDerivations = arr[i].split('').filter(e => {
-              return lambdaDerivations.includes(e);
+            /**
+             * Get the indexes
+             */
+            tempOrderedDerivations = [];
+            arr[i].split('').forEach((e, index) => {
+              if (lambdaDerivations.includes(e)) {
+                tempOrderedDerivations.push(index);
+              }
             });
+
             // PERMUTATION
             let lambdaDerivedCombinations = combinations(tempOrderedDerivations);
-            console.log(tempOrderedDerivations, 'ORDEN');
-            console.log(lambdaDerivedCombinations);
-            newRules[i].push(substractLetters(maxLenghtArr(lambdaDerivedCombinations), arr[i]));
+            let empty = [];
+            lambdaDerivedCombinations.push(empty);
+            newRules.concat(substractLetters(lambdaDerivedCombinations, arr[i]));
           }
+        }
+        let result = [...newRules];
+
+        if (key === 'S') {
+          if (result.includes('')) {
+            result.push('λ');
+          }
+          return result.filter(unique).filter(e => {
+            return e !== '';
+          });
+        } else {
+          return result.filter(unique).filter(e => {
+            return e !== 'λ' && e !== '';
+          });
         }
       };
 
       for (const key of this.rules.keys()) {
-        if (key === 'S') {
-          forloko(key, this.getRule(key), nul);
-        } else {
-          forloko(key, this.getRule(key), nul);
-        }
+        this.setRule(key, filterLambda(key, this.getRule(key), nul));
       }
-
-      // CALLATE CHCHLACA
     }
   }
+
   private chainRules() {
     let chains = new Map<string, string[]>();
     const equalSets = (setA, setB) => {
