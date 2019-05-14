@@ -54,7 +54,6 @@ class CFG {
     this.nonRecursiveInitial();
     result.final = MapToString(this.rules);
 
-    console.log(result);
     return result;
   }
 
@@ -197,8 +196,6 @@ class CFG {
     for (const key of terminalRules.keys()) {
       this.rules.set(key, terminalRules.get(key));
     }
-
-    console.log('after chomsky normalization', this.rules);
   }
 
   /**
@@ -242,7 +239,6 @@ class CFG {
         }
       });
     });
-    console.log(this.rules);
   }
 
   private eliminateLambdaRules() {
@@ -388,7 +384,6 @@ class CFG {
       }
       chains.set(key, chainSet);
     }
-    console.log('Chain sets', chains);
 
     const unique = (value, index, self) => {
       return self.indexOf(value) === index;
@@ -417,7 +412,6 @@ class CFG {
       mainRules = mainRules.filter(unique);
       this.rules.set(mainKey, mainRules);
     }
-    console.log('After chain rules', this.rules);
   }
 
   private uselessSymbols() {
@@ -476,7 +470,6 @@ class CFG {
         }
       }
     }
-    console.log('Variables that lead to terminal', term);
 
     const getAllVariables = () => {
       let variables = [];

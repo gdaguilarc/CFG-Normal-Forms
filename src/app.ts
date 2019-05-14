@@ -46,12 +46,14 @@ app.post('/result', upload.single('cfg'), async (req, res) => {
       .split('\n');
 
     const cfg = new CFG(textByLine);
-    var lambda = cfg.normalForm()[0];
-    var chain = cfg.normalForm()[1];
-    var useless = cfg.normalForm()[2];
-    var recursion = cfg.normalForm()[3];
-    var chomsky = cfg.normalForm()[4];
-    res.render('result', { lambda: lambda, chain: chain, useless: useless, recursion: recursion, chomsky: chomsky });
+    let result = await cfg.normalForm();
+    res.render('result', {
+      lambda: result.lambdaRules,
+      chain: result.chainRules,
+      useless: result.useless,
+      recursion: result.final,
+      chomsky: result.chomsky,
+    });
   } catch (err) {
     console.log(err);
     res.sendStatus(400);

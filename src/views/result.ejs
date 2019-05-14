@@ -15,45 +15,45 @@
       <div class="title">
         Delete lambda rules
       </div>
-      <% for (var i = 0; i < lambda.length; i++){
-      <div class="body"><%= arr[i] %></div>
+      <% for (let i = 0; i < lambda.length; i++){ %>
+      <div class="body"><%= lambda[i] %></div>
       <% } %>
 
       <div class="title">
         Delete chain rules
       </div>
-      <% for (var i = 0; i < chain.length; i++){
+      <% for (let i = 0; i < chain.length; i++){ %>
       <div class="body">
-        <%= arr[i] %>
+        <%= chain[i] %>
       </div>
-      } %>
+      <% } %>
 
       <div class="title">
         Delete useless symbols
       </div>
-      <% for (var i = 0; i < useless.length; i++){
+      <% for (let i = 0; i < useless.length; i++){ %>
       <div class="body">
-        <%= arr[i] %>
+        <%= useless[i] %>
       </div>
-      } %>
+      <% } %>
 
       <div class="title">
         Delete initial recursion
       </div>
-      <% for (var i = 0; i < recursion.length; i++){
+      <% for (let i = 0; i < recursion.length; i++){ %>
       <div class="body">
-        <%= arr[i] %>
+        <%= recursion[i] %>
       </div>
-      } %>
+      <% } %>
 
       <div class="title">
         Chomsky
       </div>
-      <% for (var i = 0; i < chomsky.length; i++){
+      <% for (let i = 0; i < chomsky.length; i++){ %>
       <div class="body">
-        <%= arr[i] %>
+        <%= chomsky[i] %>
       </div>
-      } %>
+      <% } %>
     </div>
   </body>
 </html>
