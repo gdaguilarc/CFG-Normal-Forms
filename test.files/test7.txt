@@ -1,0 +1,4 @@
+S --> cEB | AB
+E --> AB
+A --> Aa | λ
+B --> Bb | λ
