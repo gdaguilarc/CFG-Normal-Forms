@@ -521,7 +521,16 @@ class CFG {
         return !setB.includes(elem);
       });
     };
-    let reach = [this.rules.keys().next().value];
+    const searchInitial = () => { 
+      if (this.rules.has('S*')) {
+        return 'S*';
+      } else {
+        return 'S';
+      }
+    };
+    //let reach = [this.rules.keys().next().value];
+    let reach = [searchInitial()];
+    console.log(this.rules.keys(), 'S*' in this.rules.keys(), reach);
     let prevSet = [];
     let newSet = [];
     while (!equalSets(reach, prevSet)) {
