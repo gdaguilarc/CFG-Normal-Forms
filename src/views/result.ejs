@@ -13,6 +13,15 @@
   <body>
     <div class="container">
       <div class="title">
+        Delete initial recursion
+      </div>
+      <% for (let i = 0; i < recursion.length; i++){ %>
+      <div class="body">
+        <%= recursion[i] %>
+      </div>
+      <% } %>
+
+      <div class="title">
         Delete lambda rules
       </div>
       <% for (let i = 0; i < lambda.length; i++){ %>
@@ -34,15 +43,6 @@
       <% for (let i = 0; i < useless.length; i++){ %>
       <div class="body">
         <%= useless[i] %>
-      </div>
-      <% } %>
-
-      <div class="title">
-        Delete initial recursion
-      </div>
-      <% for (let i = 0; i < recursion.length; i++){ %>
-      <div class="body">
-        <%= recursion[i] %>
       </div>
       <% } %>
 
