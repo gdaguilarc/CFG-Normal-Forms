@@ -30,11 +30,11 @@ class CFG {
   }
 
   public normalForm() {
+    //this.nonRecursiveInitial();
     this.eliminateLambdaRules();
     this.chainRules();
     this.uselessSymbols();
     this.chomsky();
-    this.nonRecursiveInitial();
 
     console.log('FINISHED', this.rules);
   }
