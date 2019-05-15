@@ -38,6 +38,8 @@ class CFG {
       final: null,
       chomsky: null,
     };
+    this.nonRecursiveInitial();
+    result.final = MapToString(this.rules);
 
     this.eliminateLambdaRules();
     result.lambdaRules = MapToString(this.rules);
@@ -50,9 +52,6 @@ class CFG {
 
     this.chomsky();
     result.chomsky = MapToString(this.rules);
-
-    this.nonRecursiveInitial();
-    result.final = MapToString(this.rules);
 
     return result;
   }
@@ -326,7 +325,7 @@ class CFG {
         }
         let result = [...newRules];
 
-        if (key === 'S') {
+        if ((key === 'S' && !this.isRecursion()) || (key === 'S*' && this.isRecursion())) {
           if (result.includes('')) {
             result.push('λ');
           }
@@ -342,6 +341,14 @@ class CFG {
 
       for (const key of this.rules.keys()) {
         this.setRule(key, filterLambda(key, this.getRule(key), nul));
+      }
+    }
+  }
+
+  private isRecursion() {
+    for (const key of this.rules.keys()) {
+      if (key === 'S*') {
+        return true;
       }
     }
   }
