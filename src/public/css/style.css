@@ -12,13 +12,14 @@
 .title{
   margin-top: 2rem;
   font-size: 40px;
-  text-align: center;
   font-weight: 300;
   color: black;
 }
 .body{
-  text-align: center;
-  font-size: 30px;
+  text-align: justify;
+  font-size: 25px;
+  display: flex;
+  width: 80%;
 }
 .content {
   justify-content: space-around;
@@ -26,7 +27,6 @@
 .conainer{
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 .space-around {
   justify-content: space-around;
