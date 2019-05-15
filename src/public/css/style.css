@@ -9,11 +9,25 @@
   justify-content: center;
   flex-direction: column;
 }
-
+.title{
+  margin-top: 2rem;
+  font-size: 40px;
+  font-weight: 300;
+  color: black;
+}
+.body{
+  text-align: justify;
+  font-size: 25px;
+  display: flex;
+  width: 80%;
+}
 .content {
   justify-content: space-around;
 }
-
+.conainer{
+  display: flex;
+  justify-content: center;
+}
 .space-around {
   justify-content: space-around;
 }

@@ -1,2 +1,4 @@
-S --> SaB | aB
-B --> bB | λ
+S --> cEB | AB
+E --> AB
+A --> Aa | λ
+B --> Bb | λ

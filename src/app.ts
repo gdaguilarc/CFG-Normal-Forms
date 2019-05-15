@@ -6,6 +6,7 @@ import * as path from 'path';
 import * as Loki from 'lokijs';
 import { loadCollection, txtFilter, cleanFolder } from './utils';
 import { CFG } from './cfg';
+import * as ejs from 'ejs';
 
 // setup
 const DB_NAME = 'db.json';
@@ -27,6 +28,10 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+app.get('/result', (req, res) => {
+  res.render('result');
+});
+
 app.post('/result', upload.single('cfg'), async (req, res) => {
   try {
     const col = await loadCollection(COLLECTION_NAME, db);
@@ -34,19 +39,21 @@ app.post('/result', upload.single('cfg'), async (req, res) => {
 
     db.saveDatabase();
 
-    // split with '/n' for linux and '/r/n' for Windows
+    // split with '\n' for linux and '\r\n' for Windows
     const textByLine = fs
       .readFileSync(data.path)
       .toString()
       .split('\n');
 
-    console.log(textByLine);
-
     const cfg = new CFG(textByLine);
-
-    console.log('read', cfg);
-    cfg.normalForm();
-    res.send({ id: data.$loki, fileName: data.filename, originalName: data.originalname });
+    let result = await cfg.normalForm();
+    res.render('result', {
+      lambda: result.lambdaRules,
+      chain: result.chainRules,
+      useless: result.useless,
+      recursion: result.final,
+      chomsky: result.chomsky,
+    });
   } catch (err) {
     console.log(err);
     res.sendStatus(400);

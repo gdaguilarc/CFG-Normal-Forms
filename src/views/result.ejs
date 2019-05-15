@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <script src="./js/index.js"></script>
+    <title>Index</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="title">
+        Delete initial recursion
+      </div>
+      <% for (let i = 0; i < recursion.length; i++){ %>
+      <div class="body">
+        <%= recursion[i] %>
+      </div>
+      <% } %>
+
+      <div class="title">
+        Delete lambda rules
+      </div>
+      <% for (let i = 0; i < lambda.length; i++){ %>
+      <div class="body"><%= lambda[i] %></div>
+      <% } %>
+
+      <div class="title">
+        Delete chain rules
+      </div>
+      <% for (let i = 0; i < chain.length; i++){ %>
+      <div class="body">
+        <%= chain[i] %>
+      </div>
+      <% } %>
+
+      <div class="title">
+        Delete useless symbols
+      </div>
+      <% for (let i = 0; i < useless.length; i++){ %>
+      <div class="body">
+        <%= useless[i] %>
+      </div>
+      <% } %>
+
+      <div class="title">
+        Chomsky
+      </div>
+      <% for (let i = 0; i < chomsky.length; i++){ %>
+      <div class="body">
+        <%= chomsky[i] %>
+      </div>
+      <% } %>
+    </div>
+  </body>
+</html>

@@ -1,4 +1,5 @@
 import * as combinations from 'combinations';
+import { MapToString, copyMap } from './tools';
 
 class CFG {
   rules: Map<string, string[]>;
@@ -30,13 +31,29 @@ class CFG {
   }
 
   public normalForm() {
-    //this.nonRecursiveInitial();
-    this.eliminateLambdaRules();
-    this.chainRules();
-    this.uselessSymbols();
-    this.chomsky();
+    const result = {
+      lambdaRules: null,
+      chainRules: null,
+      useless: null,
+      final: null,
+      chomsky: null,
+    };
+    this.nonRecursiveInitial();
+    result.final = MapToString(this.rules);
 
-    console.log('FINISHED', this.rules);
+    this.eliminateLambdaRules();
+    result.lambdaRules = MapToString(this.rules);
+
+    this.chainRules();
+    result.chainRules = MapToString(this.rules);
+
+    this.uselessSymbols();
+    result.useless = MapToString(this.rules);
+
+    this.chomsky();
+    result.chomsky = MapToString(this.rules);
+
+    return result;
   }
 
   /**
@@ -86,9 +103,6 @@ class CFG {
       }
     }
 
-    // console.log("terminal rules", terminalRules);
-    // console.log("after terminal rules", this.rules)
-
     let newRules = new Map<string, string[]>();
     let existingRules = new Map<string, string>();
     let counter = 0;
@@ -97,7 +111,6 @@ class CFG {
       for (let rule of this.getRule(key)) {
         const len = advancedLength(rule);
         if (len > 2) {
-          // console.log("rule to examine", rule)
           let newStr = rule[0];
           let remainder = '';
           if (rule[1] === '*') {
@@ -126,9 +139,6 @@ class CFG {
         }
       }
     }
-    // console.log("after limiting to two", this.rules);
-    // console.log("existing rules", existingRules);
-    // console.log("new rules", newRules);
 
     const allChomsky = () => {
       let done = true;
@@ -147,7 +157,6 @@ class CFG {
       for (const key of newRules.keys()) {
         for (const rule of newRules.get(key)) {
           if (advancedLength(rule) > 2) {
-            // console.log("rule to examine", rule)
             let newStr = rule[0];
             let remainder = '';
             if (rule[1] === '*') {
@@ -178,9 +187,6 @@ class CFG {
         }
       }
     }
-    // console.log("after purification process");
-    // console.log("existing rules", existingRules);
-    // console.log("new rules", newRules);
 
     for (const key of newRules.keys()) {
       this.rules.set(key, newRules.get(key));
@@ -189,8 +195,6 @@ class CFG {
     for (const key of terminalRules.keys()) {
       this.rules.set(key, terminalRules.get(key));
     }
-
-    console.log('after chomsky normalization', this.rules);
   }
 
   /**
@@ -202,8 +206,12 @@ class CFG {
     }
   }
 
+  public setRule(letter: string, array: Array<string>) {
+    this.rules.set(letter, array);
+  }
+
   private isUpperCase(letter: string) {
-    if (letter === letter.toUpperCase() && letter != 'λ') {
+    if (letter === letter.toUpperCase()) {
       return true;
     } else {
       return false;
@@ -225,19 +233,17 @@ class CFG {
       const letters = elem.split('');
       letters.forEach(letter => {
         if (letter === i) {
-          this.rules.set(i + '*', [i]);
+          this.rules.set(i + '*', this.getRule(i));
           return;
         }
       });
     });
-    console.log(this.rules);
   }
 
   private eliminateLambdaRules() {
     const unique = (value, index, self) => {
       return self.indexOf(value) === index;
     };
-
     let nul = [];
     let toLambda = [];
     for (const key of this.rules.keys()) {
@@ -273,48 +279,77 @@ class CFG {
         nul = nul.filter(unique);
       }
 
-      toLambda.forEach(ele => {
-        let newStates = [];
-        this.getRule(ele).forEach(rule => {
-          if (rule != 'λ') {
-            newStates.push(rule);
-          }
-          const r = rule.split('');
-          r.forEach(letter => {
-            if (letter === letter.toLowerCase() && letter != 'λ') {
-              newStates.push(letter);
-            }
-          });
-          newStates = newStates.filter(unique);
-          this.rules.set(ele, newStates);
-        });
-      });
+      /**
+       *
+       * PERMUTATIONS PART
+       *
+       */
 
-      const rulesOfIn = this.getRule(nul[nul.length - 1]);
-      let newStates = [];
-      rulesOfIn.forEach(rule => {
-        let is = false;
-        rule.split('').forEach(letter => {
-          if (nul.includes(letter)) {
-            is = true;
-          } else {
-            is = false;
+      // Method used to substract the permutations
+      const filterLambda = (key, arr, lambdaDerivations) => {
+        let substractLetters = (controlArr, word) => {
+          let extraRules = [];
+
+          controlArr.forEach(rule => {
+            let tempWord = [...word.split('')];
+            tempWord = tempWord.filter((e, index) => {
+              return !rule.includes(index);
+            });
+            newRules.push(tempWord.join(''));
+          });
+          return extraRules;
+        };
+
+        let tempOrderedDerivations = [];
+        let newRules = [...arr];
+
+        // Order of the letters to make the permuttion
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i] !== 'λ') {
+            /**
+             * Get the indexes
+             */
+            tempOrderedDerivations = [];
+            arr[i].split('').forEach((e, index) => {
+              if (lambdaDerivations.includes(e)) {
+                tempOrderedDerivations.push(index);
+              }
+            });
+
+            // PERMUTATION
+            let lambdaDerivedCombinations = combinations(tempOrderedDerivations);
+            let empty = [];
+            lambdaDerivedCombinations.push(empty);
+            newRules.concat(substractLetters(lambdaDerivedCombinations, arr[i]));
           }
-        });
-        if (is) {
-          let com = combinations(rule.split(''));
-          com.forEach(rule => {
-            newStates.push(rule.join(''));
+        }
+        let result = [...newRules];
+
+        if ((key === 'S' && !this.isRecursion()) || (key === 'S*' && this.isRecursion())) {
+          if (result.includes('')) {
+            result.push('λ');
+          }
+          return result.filter(unique).filter(e => {
+            return e !== '';
           });
         } else {
-          newStates.push(rule);
+          return result.filter(unique).filter(e => {
+            return e !== 'λ' && e !== '';
+          });
         }
-      });
+      };
 
-      newStates.push('λ');
-      newStates = newStates.filter(unique);
-      this.rules.set(nul[nul.length - 1], newStates);
-      console.log('NEW', this.rules);
+      for (const key of this.rules.keys()) {
+        this.setRule(key, filterLambda(key, this.getRule(key), nul));
+      }
+    }
+  }
+
+  private isRecursion() {
+    for (const key of this.rules.keys()) {
+      if (key === 'S*') {
+        return true;
+      }
     }
   }
 
@@ -356,7 +391,6 @@ class CFG {
       }
       chains.set(key, chainSet);
     }
-    console.log('Chain sets', chains);
 
     const unique = (value, index, self) => {
       return self.indexOf(value) === index;
@@ -385,7 +419,6 @@ class CFG {
       mainRules = mainRules.filter(unique);
       this.rules.set(mainKey, mainRules);
     }
-    console.log('After chain rules', this.rules);
   }
 
   private uselessSymbols() {
@@ -444,7 +477,6 @@ class CFG {
         }
       }
     }
-    console.log('Variables that lead to terminal', term);
 
     const getAllVariables = () => {
       let variables = [];
@@ -453,7 +485,7 @@ class CFG {
           variables.push(key);
         }
         for (const rule of this.getRule(key)) {
-          let letters = rule.split("");
+          let letters = rule.split('');
           for (const letter of letters) {
             if (this.isUpperCase(letter) && !variables.includes(letter)) {
               variables.push(letter);
@@ -462,7 +494,7 @@ class CFG {
         }
       }
       return variables;
-    }
+    };
 
     let allVar = getAllVariables();
     let variablesToRemove = [];
@@ -483,7 +515,6 @@ class CFG {
         }
       }
     }
-    console.log("After removing variables that don't lead to terminal", this.rules);
 
     const substract = (setA, setB) => {
       return setA.filter(elem => {
@@ -509,7 +540,6 @@ class CFG {
         }
       }
     }
-    console.log('Variables derivable from initial', reach);
     let allVariables = getAllVariables();
     variablesToRemove = [];
     for (const variable of allVariables) {
@@ -529,7 +559,6 @@ class CFG {
         }
       }
     }
-    console.log("After removing variables that don't derive from initial", this.rules);
   }
 }
 
