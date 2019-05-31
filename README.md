@@ -2,8 +2,6 @@
 
 > An algorithm that transforms any context free grammar to its Chomsky's normal form
 
-One to two paragraph statement about your product and what it does.
-
 ## Installation & Run
 
 ```sh
