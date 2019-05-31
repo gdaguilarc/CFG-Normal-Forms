@@ -26,7 +26,7 @@ Use one of the test files in ./test_files or a file ".txt" with the sintax that 
 
 ## Meta
 
-Your Name – [@\_gdaguilar](https://twitter.com/_gdaguilar) – gd.aguilarc@gmail.com
+David Aguilar – [@\_gdaguilar](https://twitter.com/_gdaguilar) – gd.aguilarc@gmail.com
 
 Distributed under the GLP-3.0 license. See `LICENSE` for more information.
 
