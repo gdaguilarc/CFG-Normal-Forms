@@ -6,7 +6,6 @@ import * as path from 'path';
 import * as Loki from 'lokijs';
 import { loadCollection, txtFilter, cleanFolder } from './utils';
 import { CFG } from './cfg';
-import * as ejs from 'ejs';
 
 // setup
 const DB_NAME = 'db.json';

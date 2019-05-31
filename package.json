@@ -1,6 +1,6 @@
 {
   "name": "cfg-normal-forms",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "An algorithm that transforms any context free grammar to its Chomsky's normal form",
   "main": "./src/app.ts",
   "scripts": {
