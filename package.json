@@ -18,12 +18,12 @@
   },
   "homepage": "https://github.com/gdaguilarc/CFG-Normal-Forms#readme",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.1",
     "combinations": "^0.1.1",
     "cors": "^2.8.4",
     "del": "^3.0.0",
     "ejs": "^2.6.1",
-    "express": "^4.16.3",
+    "express": "^4.18.2",
     "lokijs": "^1.5.6",
     "multer": "^1.3.0",
     "ts-node-dev": "^1.0.0-pre.32"
